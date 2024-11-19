@@ -12,19 +12,19 @@ pipeline {
     
         stage(capture) {
             steps {
-                archiveArtifacts artifacts 'target.jar'
+                archiveArtifacts  '**/target/*.jar'
                 jacoco()
-                junit stdioRetention '', testResults 'targetsurefire-reportsTEST.xml'
+                junit '**/target/surefire-reportsTEST*.xml'
             }
         }
     }
     
     post {
         always {
-            emailext body ${env.BUILDURL}n${currentBuild.absoluteUrl},
+            emailext body "${env.BUILDURL}n${currentBuild.absoluteUrl}",
             to'opada@test.com',
             recipientProviders [developers()],
-            subject ${currentBuild.currentResult} Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]  
+            subject "${currentBuild.currentResult} Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]"  
         }
         
     }
